@@ -1,13 +1,14 @@
 package com.example.studdybuddyspring.todo
 
-import java.util.UUID
+import com.example.studdybuddyspring.AppEntity
+import jakarta.persistence.Entity
 
+@Entity
 class Todo(
     var title: String,
     var description: String,
     var isDone: Boolean = false,
-    var id: UUID? = null
-) {
+) : AppEntity() {
     fun prepare() {
         title = title.trim()
     }

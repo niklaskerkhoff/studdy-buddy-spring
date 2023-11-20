@@ -1,52 +1,37 @@
 package com.example.studdybuddyspring.todo
 
-import com.example.studdybuddyspring.utils.findIndexOrNull
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
-import java.util.UUID
+import java.util.*
 
 @Service
-class TodoService {
-
-    private val todos = mutableListOf<Todo>(
-        Todo("adsfas", "asdhgsdghdsfg", false, UUID.randomUUID()),
-        Todo("a", "f", true, UUID.randomUUID()),
-        Todo("df", "fs", false, UUID.randomUUID()),
-    )
-
-    fun getTodos(): List<Todo> {
-        return todos
-    }
+class TodoService(
+    private val todoRepo: TodoRepo
+) {
+    fun getTodos(): List<Todo> = todoRepo.findAll()
 
     fun addTodo(todo: Todo): Todo {
         todo.prepare()
         todo.checkTodo()
-        todo.id = UUID.randomUUID()
-        todos.add(todo)
-
-        return todo
+        return todoRepo.save(todo)
     }
 
-    fun updateTodo(todo: Todo): Todo {
-        todo.prepare()
-        todo.checkTodo()
+    fun updateTodo(updatedTodo: Todo): Todo {
+        updatedTodo.prepare()
+        updatedTodo.checkTodo()
 
-        val index = todos.findIndexOrNull { it.id == todo.id }
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        if (updatedTodo.id == null)
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
 
-        todos[index] = todo
-
-        return todo
+        return todoRepo.save(updatedTodo)
     }
 
     fun deleteTodo(id: UUID) {
-        val prevSize = todos.size
-        todos.removeIf { it.id == id }
-
-        if (todos.size == prevSize) {
-            throw ResponseStatusException(HttpStatus.NOT_FOUND)
-        }
+        todoRepo.findByIdOrNull(id)
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        todoRepo.deleteById(id)
     }
 
     private fun Todo.checkTodo() {
@@ -55,6 +40,5 @@ class TodoService {
         }
     }
 
-    fun getTodo(todoId: UUID) = todos.find { it.id == todoId }
-        ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
+    fun getTodo(todoId: UUID) = todoRepo.findByIdOrNull(todoId)
 }
