@@ -1,8 +1,9 @@
 package com.example.studdybuddyspring.todo
 
-import org.springframework.data.jpa.repository.JpaRepository
+import com.example.studdybuddyspring.utils.EntityRepo
 import org.springframework.stereotype.Repository
-import java.util.UUID
 
 @Repository
-interface TodoRepo : JpaRepository<Todo, UUID>
+interface TodoRepo : EntityRepo<Todo> {
+    fun findAllByIsDone(done: Boolean): List<Todo>
+}

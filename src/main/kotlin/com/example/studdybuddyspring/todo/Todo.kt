@@ -1,6 +1,6 @@
 package com.example.studdybuddyspring.todo
 
-import com.example.studdybuddyspring.AppEntity
+import com.example.studdybuddyspring.utils.AppEntity
 import jakarta.persistence.Entity
 
 @Entity

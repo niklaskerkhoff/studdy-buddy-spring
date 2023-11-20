@@ -12,6 +12,8 @@ class TodoService(
 ) {
     fun getTodos(): List<Todo> = todoRepo.findAll()
 
+    fun getTodosFiltered(isDone: Boolean) = todoRepo.findAllByIsDone(isDone)
+
     fun addTodo(todo: Todo): Todo {
         todo.prepare()
         todo.checkTodo()

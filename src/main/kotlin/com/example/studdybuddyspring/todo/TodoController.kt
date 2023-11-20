@@ -12,6 +12,10 @@ class TodoController(
     @GetMapping
     fun getTodos() = todoService.getTodos()
 
+    @GetMapping("isDone/{isDone}")
+    fun getTodosFiltered(@PathVariable isDone: Boolean) =
+        todoService.getTodosFiltered(isDone)
+
     @GetMapping("{todoId}")
     fun getTodo(@PathVariable todoId: UUID) = todoService.getTodo(todoId)
 
